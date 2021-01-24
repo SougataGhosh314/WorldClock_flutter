@@ -9,6 +9,7 @@ class WorldTime {
   String flag; // url to an asset flag icon
   String url; // location url for api endpoint
   bool isDay;
+  String date;
 
   WorldTime({this.location, this.flag, this.url});
 
@@ -29,12 +30,16 @@ class WorldTime {
       //print("$hoursInOffset : $minutesInOffset");
 
       DateTime now = DateTime.parse(datetime);
-      //print(now);
+      print(now);
       now = now.add(new Duration(hours: hoursInOffset));
       now = now.add(new Duration(minutes: minutesInOffset));
 
       // setting the time property
       this.time = DateFormat.jm().format(now);
+
+      // setting the date property
+      this.date = DateFormat.yMd().format(now);
+      //print(date);
 
       // setting the isDay property
       this.isDay = now.hour > 6 && now.hour < 18 ? true : false;

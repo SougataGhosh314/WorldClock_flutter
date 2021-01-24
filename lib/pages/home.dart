@@ -12,12 +12,14 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
-    data = ModalRoute.of(context).settings.arguments;
-    print(data["isDay"]);
+    data = data.isNotEmpty ? data : ModalRoute.of(context).settings.arguments;
+    //print(data["isDay"]);
 
-    //set backgroud
+    //set background
     String bgImage = data["isDay"] ? "day.jpg" : "night.png";
     Color bgColor = data["isDay"] ? Colors.blue[800] : Colors.black45;
+    String flagImage = "assets/" + data["flag"];
+    //print(flagImage);
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -34,8 +36,17 @@ class _HomeState extends State<Home> {
             child: Column(
               children: [
                 FlatButton.icon(
-                    onPressed: (){
-                      Navigator.pushNamed(context, "/choose_location");
+                    onPressed: () async {
+                      dynamic result = await Navigator.pushNamed(context, "/choose_location");
+                      setState(() {
+                        data = {
+                          "time": result["time"],
+                          "location": result["location"],
+                          "flag": result["flag"],
+                          "isDay": result["isDay"],
+                          "date": result["date"]
+                        };
+                      });
                     },
                     icon: Icon(Icons.edit_location, color: Colors.white,),
                     label: Text(
@@ -49,6 +60,10 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage(flagImage),
+                    ),
+                    SizedBox(width: 10),
                     Text(
                       data["location"],
                       style: TextStyle(
@@ -71,9 +86,18 @@ class _HomeState extends State<Home> {
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
-                    )
+                    ),
                   ],
                 ),
+                Text(
+                  data["date"],
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                )
               ],
             ),
           ),
